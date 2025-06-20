@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { bgimage } from '../assets/image/index'; // Import your background image
+import { bgimage } from '../assets/image/index';
 
 const OtpVerifyPage = () => {
   const [otp, setOtp] = useState(Array(6).fill(''));
@@ -18,18 +18,20 @@ const OtpVerifyPage = () => {
   }, [email]);
 
   const handleChange = (e, index) => {
-    const newOtp = [...otp];
-    newOtp[index] = e.target.value.slice(-1); // Only keep last digit
+    const value = e.target.value.replace(/\D/g, ''); // Accept only digits
+    if (!value) return;
 
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1); 
     setOtp(newOtp);
 
-    // Move to next input
-    if (e.target.value && index < otp.length - 1) {
+    // Move focus
+    if (index < otp.length - 1) {
       document.getElementById(`otp-input-${index + 1}`).focus();
     }
 
-    // Auto-submit if all fields are filled
-    if (newOtp.every((digit) => digit !== '')) {
+    // Auto-submit if all filled
+    if (newOtp.every(d => d !== '')) {
       handleVerify(newOtp.join(''));
     }
   };
@@ -40,21 +42,21 @@ const OtpVerifyPage = () => {
       return;
     }
 
-    setMessage('');
     setLoading(true);
+    setMessage('');
 
     try {
-      const response = await axios.post(
+      const res = await axios.post(
         'https://eventhon.onrender.com/api/auth/opt-verfy',
         { email, otp: otpValue },
         { withCredentials: true }
       );
-      setMessage(response.data.message);
+      setMessage(res.data.message || 'OTP verified successfully');
       navigate('/login');
-    } catch (error) {
-      setMessage(error.response?.data?.message || 'Invalid OTP, please try again');
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Invalid OTP, please try again');
       setOtp(Array(6).fill(''));
-      document.getElementById(`otp-input-0`).focus();
+      document.getElementById('otp-input-0').focus();
     } finally {
       setLoading(false);
     }

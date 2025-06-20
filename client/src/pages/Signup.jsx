@@ -8,7 +8,7 @@ export default function Signup() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState(["user"]); 
+    const [role, setRole] = useState(["user"]);
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
@@ -36,22 +36,22 @@ export default function Signup() {
                 { withCredentials: true }
             );
 
-            // If OTP was enabled
-            // setMessage("Signup successful! Redirecting to OTP...");
-            // setTimeout(() => {
-            //     navigate("/otp-verfy", { state: { email } });
-            // }, 2000);
-
-            // Since OTP is disabled
-            setMessage("Signup successful! Redirecting to login...");
-            setTimeout(() => {
-                navigate("/login");
-            }, 2000);
+            if (res.data.requireOTP) {
+                setMessage("Signup successful! Redirecting to OTP verification...");
+                setTimeout(() => {
+                    navigate("/otp-verfy", { state: { email } });
+                }, 1500);
+            } else {
+                setMessage("Signup successful! Redirecting to login...");
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1500);
+            }
 
         } catch (error) {
             if (error.response?.status === 409) {
                 setMessage("User already exists. Redirecting to login...");
-                setTimeout(() => navigate("/"), 2000);
+                setTimeout(() => navigate("/"), 1500);
             } else {
                 setMessage(error.response?.data?.message || "Something went wrong. Please try again later");
             }
