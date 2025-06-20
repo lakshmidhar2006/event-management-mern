@@ -1,12 +1,12 @@
 import express from 'express';
-import { registerUser,loginUser,otpverify } from '../controllers/authController.js';
+import { registerUser,loginUser } from '../controllers/authController.js';
 // import passport from "passport";
 // import { googleAuthCallback } from "../controllers/authController.js";
 
 const router = express.Router();
 
 router.post('/register',registerUser );
-router.post('/otp-verify',otpverify);
+// router.post('/otp-verify',otpverify);
 router.post('/login',loginUser );
 // router.get("/google", passport.authenticate("google", { scope: ["profile", "email"]   }));
 

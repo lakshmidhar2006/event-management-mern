@@ -5,7 +5,7 @@ import sendMail from '../util/mail.js';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer'
 
-const otpStore = new Map();
+// const otpStore = new Map();
 const generateToken = (id, role, name, email) => {
   return jwt.sign({ id, role, name, email }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
@@ -29,45 +29,43 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      isActivated: true  // Directly activated since OTP is disabled
     });
-
-    // Generate OTP
-    const otp = crypto.randomInt(100000, 999999).toString();
-
-    // Store OTP in memory (expires in 10 minutes)
-    otpStore.set(email, {
-      otp,
-      name,
-      expiresAt: Date.now() + 3 * 60 * 1000,
-    });
-
-    // Send OTP to email
-    try {
-      await sendOTP(email, otp);
-    } catch (e) {
-      return res.status(500).json({ message: 'Failed to send OTP', error: e.message });
-    }
 
     // Save user in DB
-      await user.save();
+    await user.save();
 
-      // After saving, set a timeout to delete if not activated
-      setTimeout(async () => {
-        try {
-          const existingUser = await User.findOne({ email });
-          if (existingUser && !existingUser.isActivated) {
-            await User.deleteOne({ email });
-            otpStore.delete(email); // <--- ADD THIS
-            console.log(`Deleted unverified user and OTP: ${email}`);
-          }
-        } catch (err) {
-          console.error(`Error deleting unverified user ${email}:`, err.message);
-        }
-      }, 3 * 60 * 1000);  //<--- 3Minutes
-      
-    
-    
-    return res.status(200).json({ success: true, message: 'OTP sent to your email' });
+    // If OTP was enabled:
+    /*
+    // Generate OTP
+    // const otp = crypto.randomInt(100000, 999999).toString();
+
+    // Store OTP in memory (expires in 3 minutes)
+    // otpStore.set(email, {
+    //   otp,
+    //   name,
+    //   expiresAt: Date.now() + 3 * 60 * 1000,
+    // });
+
+    // Send OTP to email
+    // await sendOTP(email, otp);
+
+    // Set timeout to delete unverified users
+    // setTimeout(async () => {
+    //   try {
+    //     const existingUser = await User.findOne({ email });
+    //     if (existingUser && !existingUser.isActivated) {
+    //       await User.deleteOne({ email });
+    //       otpStore.delete(email);
+    //       console.log(`Deleted unverified user and OTP: ${email}`);
+    //     }
+    //   } catch (err) {
+    //     console.error(`Error deleting unverified user ${email}:`, err.message);
+    //   }
+    // }, 3 * 60 * 1000);
+    */
+
+    return res.status(200).json({ success: true, message: 'User registered successfully' });
 
   } catch (err) {
     console.error('Registration error:', err);
@@ -77,6 +75,7 @@ export const registerUser = async (req, res) => {
     });
   }
 };
+
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;

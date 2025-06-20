@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {logo, bgimage} from "../assets/image/index";
+import { logo, bgimage } from "../assets/image/index";
 // import GoogleSignInButton from "../components/GoogleSignInButton";
-
 
 export default function Signup() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState(["user"]); // Added role field
+    const [role, setRole] = useState(["user"]); 
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
@@ -25,21 +24,30 @@ export default function Signup() {
             setMessage("Please enter a valid email address.");
             return;
         }
-             setMessage("Signing you up...");
+
+        setMessage("Signing you up...");
 
         const formData = { name, email, password, role };
-    
+
         try {
             const res = await axios.post(
                 "https://event-management-mern-tgy5.onrender.com/api/auth/register",
                 formData,
                 { withCredentials: true }
             );
-    
-            setMessage("Signup successful! Redirecting to OTP...");
+
+            // If OTP was enabled
+            // setMessage("Signup successful! Redirecting to OTP...");
+            // setTimeout(() => {
+            //     navigate("/otp-verfy", { state: { email } });
+            // }, 2000);
+
+            // Since OTP is disabled
+            setMessage("Signup successful! Redirecting to login...");
             setTimeout(() => {
-                navigate("/otp-verfy", { state: { email } });
+                navigate("/login");
             }, 2000);
+
         } catch (error) {
             if (error.response?.status === 409) {
                 setMessage("User already exists. Redirecting to login...");
@@ -48,7 +56,7 @@ export default function Signup() {
                 setMessage(error.response?.data?.message || "Something went wrong. Please try again later");
             }
         }
-    };    
+    };
 
     return (
         <div style={{
@@ -125,8 +133,6 @@ export default function Signup() {
                             required
                             style={{ padding: "12px", borderRadius: "5px", border: "1px solid #ccc", fontSize: "1rem" }}
                         />
-
-                        {/* Role toggle checkbox */}
                         <label style={{ fontSize: "0.9rem", textAlign: "left" }}>
                             <input
                                 type="checkbox"
@@ -141,7 +147,6 @@ export default function Signup() {
                             />{" "}
                             Check if you want to host events on our platform
                         </label>
-
                         <button type="submit" style={{
                             padding: "12px",
                             borderRadius: "5px",
