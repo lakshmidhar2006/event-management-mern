@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {logo, bgimage} from "../assets/image/index";
-import GoogleSignInButton from "../components/GoogleSignInButton";
+// import GoogleSignInButton from "../components/GoogleSignInButton";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -138,8 +138,8 @@ export default function Login() {
                         </span>
                     </p>
 
-
-                    <GoogleSignInButton/>
+{/* 
+                    <GoogleSignInButton/> */}
                 </div>
             </div>
         </div>

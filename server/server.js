@@ -3,13 +3,13 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import "./config/passport.js"
+// import "./config/passport.js"
 
 dotenv.config();
 
 const app = express();
 app.use(cors({
-    origin: "https://eventhon.netlify.app",
+    origin: "https://event-management-mern-coral.vercel.app",
     credentials: true
 }));     
 
