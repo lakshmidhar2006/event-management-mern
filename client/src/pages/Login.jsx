@@ -27,7 +27,7 @@ export default function Login() {
         const loginData = { email, password };
     
         try {
-            const response = await axios.post("https://eventhon.onrender.com/api/auth/login", loginData,{ withCredentials: true });
+            const response = await axios.post("https://event-management-mern-tgy5.onrender.com/api/auth/login", loginData,{ withCredentials: true });
             if (response.data.token) {
                 localStorage.setItem("token", response.data.token);
                 setMessage("Login successful! Redirecting...");

@@ -31,7 +31,7 @@ export default function Signup() {
     
         try {
             const res = await axios.post(
-                "https://eventhon.onrender.com/api/auth/register",
+                "https://event-management-mern-tgy5.onrender.com/api/auth/register",
                 formData,
                 { withCredentials: true }
             );
@@ -162,7 +162,7 @@ export default function Signup() {
                         </span>
                     </p>
 
-                    <GoogleSignInButton/>
+                    {/* <GoogleSignInButton/> */}
                 </div>
             </div>
         </div>
