@@ -28,7 +28,7 @@ app.use('/api/auth', authRoutes);
 
 
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect('mongodb+srv://root:root@cluster0.rzoungm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => {
     console.log('MongoDB connected');
     app.listen(PORT, () => {
